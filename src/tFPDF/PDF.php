@@ -203,7 +203,7 @@ class PDF
      *
      * @var string
      */
-    protected $str_font_path = __DIR__ . '/../font/';
+    protected $str_font_path = '';
 
     /**
      * The path that we use to write the fonts to
@@ -450,6 +450,7 @@ class PDF
      */
     public function __construct($str_orientation = 'P', $str_units = 'mm', $str_size = 'A4')
     {
+        $this->str_font_path = __DIR__ . '/../font/';
 
         if (defined('FPDF_FONTPATH')) {
             $this->str_font_path = FPDF_FONTPATH;
