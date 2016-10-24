@@ -1,8 +1,8 @@
 {
-    "name": "docnet/tFPDF",
-    "description": "tFPDF",
+    "name": "docnet/tfpdf",
+    "description": "tfpdf",
     "keywords": ["pdf"],
-    "homepage": "http://github.com/dblencowe/tfpdf",
+    "homepage": "http://github.com/DocnetUK/tfpdf",
     "type": "library",
     "license": "LGPL",
     "authors": [
