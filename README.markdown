@@ -41,3 +41,7 @@ What about performance?
 --
 
 Of course, the generation speed of the document is less than with PDFlib. However, the performance penalty keeps very reasonable and suits in most cases, unless your documents are particularly complex or heavy.
+
+## Source attribution ##
+
+The Code 128 and Code 39 barcode library code was taken directly from the FPDF website, where source attribution is vague at best, but mostly non-existent. If you need source attribution applying for your code included here, please raise an issue.
