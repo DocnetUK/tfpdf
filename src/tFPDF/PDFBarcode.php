@@ -1,6 +1,6 @@
 <?php
 /**
- * PDFCode128.php
+ * PDFBarcode.php
  *
  * @author David Wilcock <dwilcock@doc-net.com>
  * @copyright Venditan Limited 2016
@@ -9,7 +9,7 @@
 namespace tFPDF;
 
 
-class PDFCode128 extends PDF
+class PDFBarcode extends PDF
 {
 
     /**
@@ -62,6 +62,11 @@ class PDFCode128 extends PDF
     protected $arr_j_swap = array("A" => 101, "B" => 100, "C" => 99);
 
     /**
+     * @var array
+     */
+    protected $arr_bar_char = [];
+
+    /**
      * PDFCode128 constructor.
      *
      * @param string $str_orientation
@@ -71,13 +76,12 @@ class PDFCode128 extends PDF
     public function __construct($str_orientation = 'P', $str_units = 'mm', $str_size = 'A4')
     {
         parent::__construct($str_orientation, $str_units, $str_size);
-        $this->Init();
     }
 
     /**
      * Initialisation
      */
-    private function Init()
+    private function Init128()
     {
         $this->arr_code_table[] = array(2, 1, 2, 2, 2, 2);           //0 : [ ]
         $this->arr_code_table[] = array(2, 2, 2, 1, 2, 2);           //1 : [!]
@@ -226,6 +230,58 @@ class PDFCode128 extends PDF
             $this->arr_set_to["A"] .= chr($i);
             $this->arr_set_to["B"] .= chr($i);
         }
+
+    }
+
+    /**
+     *
+     */
+    private function Init39()
+    {
+        $this->arr_bar_char['0'] = 'nnnwwnwnn';
+        $this->arr_bar_char['1'] = 'wnnwnnnnw';
+        $this->arr_bar_char['2'] = 'nnwwnnnnw';
+        $this->arr_bar_char['3'] = 'wnwwnnnnn';
+        $this->arr_bar_char['4'] = 'nnnwwnnnw';
+        $this->arr_bar_char['5'] = 'wnnwwnnnn';
+        $this->arr_bar_char['6'] = 'nnwwwnnnn';
+        $this->arr_bar_char['7'] = 'nnnwnnwnw';
+        $this->arr_bar_char['8'] = 'wnnwnnwnn';
+        $this->arr_bar_char['9'] = 'nnwwnnwnn';
+        $this->arr_bar_char['A'] = 'wnnnnwnnw';
+        $this->arr_bar_char['B'] = 'nnwnnwnnw';
+        $this->arr_bar_char['C'] = 'wnwnnwnnn';
+        $this->arr_bar_char['D'] = 'nnnnwwnnw';
+        $this->arr_bar_char['E'] = 'wnnnwwnnn';
+        $this->arr_bar_char['F'] = 'nnwnwwnnn';
+        $this->arr_bar_char['G'] = 'nnnnnwwnw';
+        $this->arr_bar_char['H'] = 'wnnnnwwnn';
+        $this->arr_bar_char['I'] = 'nnwnnwwnn';
+        $this->arr_bar_char['J'] = 'nnnnwwwnn';
+        $this->arr_bar_char['K'] = 'wnnnnnnww';
+        $this->arr_bar_char['L'] = 'nnwnnnnww';
+        $this->arr_bar_char['M'] = 'wnwnnnnwn';
+        $this->arr_bar_char['N'] = 'nnnnwnnww';
+        $this->arr_bar_char['O'] = 'wnnnwnnwn';
+        $this->arr_bar_char['P'] = 'nnwnwnnwn';
+        $this->arr_bar_char['Q'] = 'nnnnnnwww';
+        $this->arr_bar_char['R'] = 'wnnnnnwwn';
+        $this->arr_bar_char['S'] = 'nnwnnnwwn';
+        $this->arr_bar_char['T'] = 'nnnnwnwwn';
+        $this->arr_bar_char['U'] = 'wwnnnnnnw';
+        $this->arr_bar_char['V'] = 'nwwnnnnnw';
+        $this->arr_bar_char['W'] = 'wwwnnnnnn';
+        $this->arr_bar_char['X'] = 'nwnnwnnnw';
+        $this->arr_bar_char['Y'] = 'wwnnwnnnn';
+        $this->arr_bar_char['Z'] = 'nwwnwnnnn';
+        $this->arr_bar_char['-'] = 'nwnnnnwnw';
+        $this->arr_bar_char['.'] = 'wwnnnnwnn';
+        $this->arr_bar_char[' '] = 'nwwnnnwnn';
+        $this->arr_bar_char['*'] = 'nwnnwnwnn';
+        $this->arr_bar_char['$'] = 'nwnwnwnnn';
+        $this->arr_bar_char['/'] = 'nwnwnnnwn';
+        $this->arr_bar_char['+'] = 'nwnnnwnwn';
+        $this->arr_bar_char['%'] = 'nnnwnwnwn';
     }
 
     /**
@@ -235,8 +291,10 @@ class PDFCode128 extends PDF
      * @param $flt_width
      * @param $flt_height
      */
-    function Code128($flt_pos_x, $flt_pos_y, $str_code, $flt_width, $flt_height)
+    public function Code128($flt_pos_x, $flt_pos_y, $str_code, $flt_width, $flt_height)
     {
+
+        $this->Init128();
 
         $Aguid = "";
         $Bguid = "";
@@ -318,6 +376,48 @@ class PDFCode128 extends PDF
                 $this->Rect($flt_pos_x, $flt_pos_y, $c[$j] * $modul, $flt_height, "F");
                 $flt_pos_x += ($c[$j++] + $c[$j]) * $modul;
             }
+        }
+    }
+
+    /**
+     * @param $flt_pos_x
+     * @param $flt_pos_y
+     * @param $str_code
+     * @param float $flt_baseline
+     * @param int $flt_height
+     * @throws \Exception
+     */
+    public function Code39($flt_pos_x, $flt_pos_y, $str_code, $flt_baseline = 0.5, $flt_height = 5)
+    {
+        $this->Init39();
+
+        $flt_wide = $flt_baseline;
+        $flt_narrow = $flt_baseline / 3;
+        $flt_gap = $flt_narrow;
+
+        $this->SetFont('Arial', '', 10);
+        $this->Text($flt_pos_x, $flt_pos_y + $flt_height + 4, $str_code);
+        $this->SetFillColor(0);
+
+        $str_code = '*' . strtoupper($str_code) . '*';
+        for ($i = 0; $i < strlen($str_code); $i++) {
+            $str_char = $str_code[$i];
+            if (!isset($this->arr_bar_char[$str_char])) {
+                throw new \Exception("Invalid character in barcode: " . $str_char);
+            }
+            $arr_sequence = $this->arr_bar_char[$str_char];
+            for ($int_bar = 0; $int_bar < 9; $int_bar++) {
+                if ($arr_sequence[$int_bar] == 'n') {
+                    $flt_line_width = $flt_narrow;
+                } else {
+                    $flt_line_width = $flt_wide;
+                }
+                if ($int_bar % 2 == 0) {
+                    $this->Rect($flt_pos_x, $flt_pos_y, $flt_line_width, $flt_height, 'F');
+                }
+                $flt_pos_x += $flt_line_width;
+            }
+            $flt_pos_x += $flt_gap;
         }
     }
 

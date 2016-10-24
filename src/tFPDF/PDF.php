@@ -551,7 +551,7 @@ class PDF
     /**
      * @param $int_margin
      */
-    function SetLeftMargin($int_margin)
+    public function SetLeftMargin($int_margin)
     {
         // Set left margin
         $this->int_left_margin = $int_margin;
@@ -563,7 +563,7 @@ class PDF
     /**
      * @param $int_margin
      */
-    function SetTopMargin($int_margin)
+    public function SetTopMargin($int_margin)
     {
         // Set top margin
         $this->int_top_margin = $int_margin;
@@ -572,7 +572,7 @@ class PDF
     /**
      * @param $int_margin
      */
-    function SetRightMargin($int_margin)
+    public function SetRightMargin($int_margin)
     {
         // Set right margin
         $this->int_right_margin = $int_margin;
@@ -582,7 +582,7 @@ class PDF
      * @param $bol_auto
      * @param int $int_margin
      */
-    function SetAutoPageBreak($bol_auto, $int_margin = 0)
+    public function SetAutoPageBreak($bol_auto, $int_margin = 0)
     {
         // Set auto page break mode and triggering margin
         $this->bol_auto_page_break = $bol_auto;
@@ -594,7 +594,7 @@ class PDF
      * @param $str_zoom
      * @param string $str_layout
      */
-    function SetDisplayMode($str_zoom, $str_layout = 'default')
+    public function SetDisplayMode($str_zoom, $str_layout = 'default')
     {
         // Set display mode in viewer
         if ($str_zoom == 'fullpage' || $str_zoom == 'fullwidth' || $str_zoom == 'real' || $str_zoom == 'default' || !is_string($str_zoom)) {
@@ -612,7 +612,7 @@ class PDF
     /**
      * @param $bol_compression
      */
-    function SetCompression($bol_compression)
+    public function SetCompression($bol_compression)
     {
         // Set page compression
         if (function_exists('gzcompress')) {
@@ -626,7 +626,7 @@ class PDF
      * @param $str_title
      * @param bool $bol_utf8
      */
-    function SetTitle($str_title, $bol_utf8 = false)
+    public function SetTitle($str_title, $bol_utf8 = false)
     {
         // Title of document
         if ($bol_utf8) {
@@ -639,7 +639,7 @@ class PDF
      * @param $str_subject
      * @param bool $bol_utf8
      */
-    function SetSubject($str_subject, $bol_utf8 = false)
+    public function SetSubject($str_subject, $bol_utf8 = false)
     {
         // Subject of document
         if ($bol_utf8) {
@@ -652,7 +652,7 @@ class PDF
      * @param $str_author
      * @param bool $bol_utf8
      */
-    function SetAuthor($str_author, $bol_utf8 = false)
+    public function SetAuthor($str_author, $bol_utf8 = false)
     {
         // Author of document
         if ($bol_utf8) {
@@ -665,7 +665,7 @@ class PDF
      * @param $str_keywords
      * @param bool $bol_utf8
      */
-    function SetKeywords($str_keywords, $bol_utf8 = false)
+    public function SetKeywords($str_keywords, $bol_utf8 = false)
     {
         // Keywords of document
         if ($bol_utf8) {
@@ -678,7 +678,7 @@ class PDF
      * @param $str_creator
      * @param bool $bol_utf8
      */
-    function SetCreator($str_creator, $bol_utf8 = false)
+    public function SetCreator($str_creator, $bol_utf8 = false)
     {
         // Creator of document
         if ($bol_utf8) {
@@ -690,7 +690,7 @@ class PDF
     /**
      * @param string $str_alias
      */
-    function AliasNbPages($str_alias = '{nb}')
+    public function AliasNbPages($str_alias = '{nb}')
     {
         // Define an alias for total number of pages
         $this->str_alias_number_pages = $str_alias;
@@ -708,7 +708,7 @@ class PDF
     /**
      * Inits the document
      */
-    function Open()
+    public function Open()
     {
         // Begin document
         $this->int_state = self::DOCUMENT_STATE_INITIALIZED;
@@ -717,7 +717,7 @@ class PDF
     /**
      * Closes the document
      */
-    function Close()
+    public function Close()
     {
         // Terminate document
         if ($this->int_state == self::DOCUMENT_STATE_TERMINATED) {
@@ -740,7 +740,7 @@ class PDF
      * @param string $str_orientation
      * @param string $str_size
      */
-    function AddPage($str_orientation = '', $str_size = '')
+    public function AddPage($str_orientation = '', $str_size = '')
     {
         // Start a new page
         if ($this->int_state == self::DOCUMENT_STATE_NOT_INITIALIZED) {
@@ -813,7 +813,7 @@ class PDF
     /**
      *
      */
-    function Header()
+    public function Header()
     {
         // To be implemented in your own inherited class
     }
@@ -821,7 +821,7 @@ class PDF
     /**
      *
      */
-    function Footer()
+    public function Footer()
     {
         // To be implemented in your own inherited class
     }
@@ -829,7 +829,7 @@ class PDF
     /**
      * @return int
      */
-    function PageNo()
+    public function PageNo()
     {
         // Get current page number
         return $this->int_page;
@@ -840,7 +840,7 @@ class PDF
      * @param null $int_green
      * @param null $int_blue
      */
-    function SetDrawColor($int_red, $int_green = null, $int_blue = null)
+    public function SetDrawColor($int_red, $int_green = null, $int_blue = null)
     {
         // Set color for all stroking operations
         if (($int_red == 0 && $int_green == 0 && $int_blue == 0) || $int_green === null) {
@@ -858,7 +858,7 @@ class PDF
      * @param null $int_green
      * @param null $int_blue
      */
-    function SetFillColor($int_red, $int_green = null, $int_blue = null)
+    public function SetFillColor($int_red, $int_green = null, $int_blue = null)
     {
         // Set color for all filling operations
         if (($int_red == 0 && $int_green == 0 && $int_blue == 0) || $int_green === null) {
@@ -877,7 +877,7 @@ class PDF
      * @param null $int_green
      * @param null $int_blue
      */
-    function SetTextColor($int_red, $int_green = null, $int_blue = null)
+    public function SetTextColor($int_red, $int_green = null, $int_blue = null)
     {
         // Set color for text
         if (($int_red == 0 && $int_green == 0 && $int_blue == 0) || $int_green === null) {
@@ -892,7 +892,7 @@ class PDF
      * @param $str_text
      * @return float|int
      */
-    function GetStringWidth($str_text)
+    public function GetStringWidth($str_text)
     {
         // Get width of a string in the current font
         $str_text = (string)$str_text;
@@ -931,7 +931,7 @@ class PDF
     /**
      * @param $flt_width
      */
-    function SetLineWidth($flt_width)
+    public function SetLineWidth($flt_width)
     {
         // Set line width
         $this->flt_line_width = $flt_width;
@@ -946,7 +946,7 @@ class PDF
      * @param $flt_x_2
      * @param $flt_y_2
      */
-    function Line($flt_x_1, $flt_y_1, $flt_x_2, $flt_y_2)
+    public function Line($flt_x_1, $flt_y_1, $flt_x_2, $flt_y_2)
     {
         // Draw a line
         $this->Out(sprintf('%.2F %.2F m %.2F %.2F l S', $flt_x_1 * $this->flt_scale_factor,
@@ -961,7 +961,7 @@ class PDF
      * @param $flt_height
      * @param string $str_style
      */
-    function Rect($flt_x, $flt_y, $flt_width, $flt_height, $str_style = '')
+    public function Rect($flt_x, $flt_y, $flt_width, $flt_height, $str_style = '')
     {
         // Draw a rectangle
         if ($str_style == 'F') {
@@ -982,7 +982,7 @@ class PDF
      * @param string $str_file
      * @param bool $bol_unicode
      */
-    function AddFont($str_family, $str_style = '', $str_file = '', $bol_unicode = false)
+    public function AddFont($str_family, $str_style = '', $str_file = '', $bol_unicode = false)
     {
         // Add a TrueType, OpenType or Type1 font
         $str_family = strtolower($str_family);
@@ -1119,7 +1119,7 @@ class PDF
      * @param string $str_style
      * @param int $int_size
      */
-    function SetFont($str_family, $str_style = '', $int_size = 0)
+    public function SetFont($str_family, $str_style = '', $int_size = 0)
     {
         // Select a font; size given in points
         if ($str_family == '') {
@@ -1182,7 +1182,7 @@ class PDF
     /**
      * @param $int_size
      */
-    function SetFontSize($int_size)
+    public function SetFontSize($int_size)
     {
         // Set font size in points
         if ($this->int_current_font_size == $int_size) {
@@ -1198,7 +1198,7 @@ class PDF
     /**
      * @return int
      */
-    function AddLink()
+    public function AddLink()
     {
         // Create a new internal link
         $int_count = count($this->arr_internal_links) + 1;
@@ -1211,7 +1211,7 @@ class PDF
      * @param int $int_y
      * @param int $int_page
      */
-    function SetLink($mix_link_key, $int_y = 0, $int_page = -1)
+    public function SetLink($mix_link_key, $int_y = 0, $int_page = -1)
     {
         // Set destination of internal link
         if ($int_y == -1) {
@@ -1230,7 +1230,7 @@ class PDF
      * @param $flt_height
      * @param $mix_link_key
      */
-    function Link($flt_x, $flt_y, $flt_width, $flt_height, $mix_link_key)
+    public function Link($flt_x, $flt_y, $flt_width, $flt_height, $mix_link_key)
     {
         // Put a link on the page
         $this->arr_page_links[$this->int_page][] = array(
@@ -1247,7 +1247,7 @@ class PDF
      * @param $flt_y
      * @param $str_text
      */
-    function Text($flt_x, $flt_y, $str_text)
+    public function Text($flt_x, $flt_y, $str_text)
     {
         // Output a string
         if ($this->bol_uniform_subset) {
@@ -1272,7 +1272,7 @@ class PDF
     /**
      * @return bool
      */
-    function AcceptPageBreak()
+    public function AcceptPageBreak()
     {
         // Accept automatic page break or not
         return $this->bol_auto_page_break;
@@ -1288,7 +1288,7 @@ class PDF
      * @param bool $bol_fill
      * @param string $str_link
      */
-    function Cell($flt_width, $flt_height = 0, $str_text = '', $int_border = 0, $int_line_number = 0, $str_alignment = '', $bol_fill = false, $str_link = '')
+    public function Cell($flt_width, $flt_height = 0, $str_text = '', $int_border = 0, $int_line_number = 0, $str_alignment = '', $bol_fill = false, $str_link = '')
     {
         // Output a cell
         $flt_scale = $this->flt_scale_factor;
@@ -1423,7 +1423,7 @@ class PDF
      * @param string $str_alignment
      * @param bool $bol_fill
      */
-    function MultiCell($flt_width, $flt_height, $str_text, $int_border = 0, $str_alignment = 'J', $bol_fill = false)
+    public function MultiCell($flt_width, $flt_height, $str_text, $int_border = 0, $str_alignment = 'J', $bol_fill = false)
     {
         // Output text with automatic or explicit line breaks
         $arr_character_width = &$this->arr_current_font_info['cw'];
@@ -1569,7 +1569,7 @@ class PDF
      * @param $str_text
      * @param string $str_link
      */
-    function Write($flt_height, $str_text, $str_link = '')
+    public function Write($flt_height, $str_text, $str_link = '')
     {
         // Output text in flowing mode
         $arr_character_widths = &$this->arr_current_font_info['cw'];
@@ -1682,7 +1682,7 @@ class PDF
     /**
      * @param float|null $flt_height
      */
-    function Ln($flt_height = null)
+    public function Ln($flt_height = null)
     {
         // Line feed; default value is last cell height
         $this->flt_position_x = $this->int_left_margin;
@@ -1702,7 +1702,7 @@ class PDF
      * @param string $str_type
      * @param string $str_link
      */
-    function Image($str_file, $flt_x = null, $flt_y = null, $int_width = 0, $int_height = 0, $str_type = '', $str_link = '')
+    public function Image($str_file, $flt_x = null, $flt_y = null, $int_width = 0, $int_height = 0, $str_type = '', $str_link = '')
     {
         // Put an image on the page
         if (!isset($this->arr_images[$str_file])) {
@@ -1774,7 +1774,7 @@ class PDF
     /**
      * @return mixed
      */
-    function GetX()
+    public function GetX()
     {
         // Get x position
         return $this->flt_position_x;
@@ -1783,7 +1783,7 @@ class PDF
     /**
      * @param $flt_position_x
      */
-    function SetX($flt_position_x)
+    public function SetX($flt_position_x)
     {
         // Set x position
         if ($flt_position_x >= 0) {
@@ -1796,7 +1796,7 @@ class PDF
     /**
      * @return float
      */
-    function GetY()
+    public function GetY()
     {
         // Get y position
         return $this->flt_position_y;
@@ -1805,7 +1805,7 @@ class PDF
     /**
      * @param $flt_position_y
      */
-    function SetY($flt_position_y)
+    public function SetY($flt_position_y)
     {
         // Set y position and reset x
         $this->flt_position_x = $this->int_left_margin;
@@ -1820,7 +1820,7 @@ class PDF
      * @param $x
      * @param $y
      */
-    function SetXY($x, $y)
+    public function SetXY($x, $y)
     {
         // Set x and y positions
         $this->SetY($y);
@@ -2405,7 +2405,7 @@ class PDF
     /**
      *
      */
-    function PutFonts()
+    public function PutFonts()
     {
         $int_current_object = $this->int_current_object;
         foreach ($this->arr_encoding_diffs as $str_diff) {
@@ -2783,7 +2783,7 @@ class PDF
     /**
      * @param $arr_info
      */
-    function PutImage(&$arr_info)
+    public function PutImage(&$arr_info)
     {
         $this->NewObject();
         $arr_info['n'] = $this->int_current_object;
@@ -2847,7 +2847,7 @@ class PDF
     /**
      *
      */
-    function PutXObjectDict()
+    public function PutXObjectDict()
     {
         foreach ($this->arr_images as $arr_image) {
             $this->Out('/I' . $arr_image['i'] . ' ' . $arr_image['n'] . ' 0 R');
@@ -2857,7 +2857,7 @@ class PDF
     /**
      *
      */
-    function PutResourceDict()
+    public function PutResourceDict()
     {
         $this->Out('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
         $this->Out('/Font <<');
@@ -2873,7 +2873,7 @@ class PDF
     /**
      *
      */
-    function PutResources()
+    public function PutResources()
     {
         $this->PutFonts();
         $this->PutImages();
@@ -2889,7 +2889,7 @@ class PDF
     /**
      *
      */
-    function PutInfo()
+    public function PutInfo()
     {
         $this->Out('/Producer ' . $this->TextString('tFPDF ' . $this->str_pdf_version));
         if (!empty($this->str_title)) {
@@ -2913,7 +2913,7 @@ class PDF
     /**
      *
      */
-    function PutCatalog()
+    public function PutCatalog()
     {
         $this->Out('/Type /Catalog');
         $this->Out('/Pages 1 0 R');
@@ -2938,7 +2938,7 @@ class PDF
     /**
      *
      */
-    function PutHeader()
+    public function PutHeader()
     {
         $this->Out('%PDF-' . $this->str_pdf_version);
     }
@@ -2946,7 +2946,7 @@ class PDF
     /**
      *
      */
-    function PutTrailer()
+    public function PutTrailer()
     {
         $this->Out('/Size ' . ($this->int_current_object + 1));
         $this->Out('/Root ' . $this->int_current_object . ' 0 R');
@@ -2956,7 +2956,7 @@ class PDF
     /**
      *
      */
-    function EndDoc()
+    public function EndDoc()
     {
         $this->PutHeader();
         $this->PutPages();
@@ -2999,7 +2999,7 @@ class PDF
      * @param bool $bol_set_byte_order_mark
      * @return string
      */
-    function UTF8ToUTF16BE($str_input, $bol_set_byte_order_mark = true)
+    public function UTF8ToUTF16BE($str_input, $bol_set_byte_order_mark = true)
     {
         $str_output = "";
         if ($bol_set_byte_order_mark) {
@@ -3015,7 +3015,7 @@ class PDF
      * @param $str_input
      * @return array
      */
-    function UTF8StringToArray($str_input)
+    public function UTF8StringToArray($str_input)
     {
         $arr_output = array();
         $int_string_length = strlen($str_input);
