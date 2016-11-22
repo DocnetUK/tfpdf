@@ -442,6 +442,12 @@ class PDF
      */
     protected $str_unifont_path = 'unifont/';
 
+    protected $str_font_metrics_file_suffix = '-font-metrics.json';
+
+    protected $str_character_widths_file_suffix = '-character-widths.dat';
+
+    protected $str_127_character_widths_file_suffix = '-character-width-127.json';
+
     /**
      * PDF constructor.
      * @param string $str_orientation
@@ -1002,36 +1008,36 @@ class PDF
             return;
         }
 
+        $str_file_without_extension = strtolower(substr($str_file, 0, (strpos($str_file, '.'))));
 
         if ($bol_unicode) {
-            if (defined("_SYSTEM_TTFONTS") && file_exists(_SYSTEM_TTFONTS . $str_file)) {
-                $str_ttf_filename = _SYSTEM_TTFONTS . $str_file;
-            } else {
-                $str_ttf_filename = $this->getFontPath() . $this->str_unifont_path . $str_file;
-            }
-            $str_unicode_file = $this->str_unifont_path . strtolower(substr($str_file, 0, (strpos($str_file, '.'))));
-            $str_unicode_filename = $this->getFontWritePath() . $str_unicode_file;
-            $str_name = '';
-            $int_original_size = 0;
-            $arr_ttf_stat = stat($str_ttf_filename);
-            if (file_exists($str_unicode_filename . '.mtx.php')) {
-                include($str_unicode_filename . '.mtx.php');
-            } else {
-                //$str_unicode_filename = $this->getFontWritePath() . $str_unicode_file;
+
+            $str_ttf_file = $this->getFontPath() . $this->str_unifont_path . $str_file;
+            $str_metrics_ident = $this->getFontPath() . $this->str_unifont_path . $str_file_without_extension;
+
+            if (!file_exists($str_ttf_file)) {
+                throw new \Exception("TTF Font file does not exist in location: ". $str_ttf_file);
             }
 
-            $arr_descriptors = [];
-            $flt_underline_pos = 0.00;
-            $flt_underline_thickness = 0.00;
+            $arr_ttf_stat = stat($str_ttf_file);
 
-            if (!isset($str_type) || !isset($str_name) || $int_original_size != $arr_ttf_stat['size']) {
+            $str_font_metrics_file = $str_metrics_ident . $this->str_font_metrics_file_suffix;
+            $str_character_widths_file = $str_metrics_ident . $this->str_character_widths_file_suffix;
+            $str_character_widths_127_file = $str_metrics_ident . $this->str_127_character_widths_file_suffix;
 
+            if (file_exists($str_font_metrics_file)) {
+                $obj_font_metrics = json_decode(file_get_contents($str_font_metrics_file));
+                $arr_character_widths = $this->readFontFile($str_character_widths_file);
+            } else {
+                echo "Font metrics file doesn't exist: " . $str_font_metrics_file;
                 $obj_ttf = new TTFontFile();
-                $obj_ttf->getMetrics($str_ttf_filename);
+                $obj_ttf->getMetrics($str_ttf_file);
                 $arr_character_widths = $obj_ttf->getCharWidths();
-                $str_name = preg_replace('/[ ()]/', '', $obj_ttf->getFullName());
 
-                $arr_descriptors = array(
+                $arr_font_metrics = [];
+                $arr_font_metrics['name'] = preg_replace('/[ ()]/', '', $obj_ttf->getFullName());
+
+                $arr_descriptors = [
                     'Ascent' => round($obj_ttf->getAscent()),
                     'Descent' => round($obj_ttf->getDescent()),
                     'CapHeight' => round($obj_ttf->getCapHeight()),
@@ -1040,53 +1046,54 @@ class PDF
                     'ItalicAngle' => $obj_ttf->getItalicAngle(),
                     'StemV' => round($obj_ttf->getStemV()),
                     'MissingWidth' => round($obj_ttf->getDefaultWidth())
-                );
+                ];
 
                 $flt_underline_pos = round($obj_ttf->getUnderlinePosition());
                 $flt_underline_thickness = round($obj_ttf->getUnderlineThickness());
-                $int_original_size = $arr_ttf_stat['size'] + 0;
+                $int_original_size = $arr_ttf_stat['size'];
                 $str_type = self::FONT_TRUETYPE;
-                // Generate metrics .php file
-                $str_metrics_data = '<?php' . "\n";
-                $str_metrics_data .= '$name=\'' . $str_name . "';\n";
-                $str_metrics_data .= '$type=\'' . $str_type . "';\n";
-                $str_metrics_data .= '$desc=' . var_export($arr_descriptors, true) . ";\n";
-                $str_metrics_data .= '$up=' . $flt_underline_pos . ";\n";
-                $str_metrics_data .= '$ut=' . $flt_underline_thickness . ";\n";
-                $str_metrics_data .= '$ttffile=\'' . str_replace(__DIR__ . "/", "", $str_ttf_filename) . "';\n";
-                $str_metrics_data .= '$originalsize=' . $int_original_size . ";\n";
-                $str_metrics_data .= '$fontkey=\'' . $str_font_key . "';\n";
-                $str_metrics_data .= "?>";
+
+                $arr_font_metrics['descriptors'] = $arr_descriptors;
+                $arr_font_metrics['type'] = $str_type;
+                $arr_font_metrics['underline_position'] = $flt_underline_pos;
+                $arr_font_metrics['underline_thickness'] = $flt_underline_thickness;
+                $arr_font_metrics['ttf_file'] = str_replace(__DIR__ . "/", "", $str_ttf_file);
+                $arr_font_metrics['original_size'] = $int_original_size;
+                $arr_font_metrics['font_key'] = $str_font_key;
+
+                $obj_font_metrics = (object)$arr_font_metrics;
+
                 if (is_writable(dirname($this->getFontWritePath() . $this->str_unifont_path . 'x'))) {
-                    $this->writeFontFile($str_unicode_filename . '.mtx.php', $str_metrics_data);
-                    $this->writeFontFile($str_unicode_filename . '.cw.dat', $arr_character_widths);
-                    $this->clearFontFile($str_unicode_filename . '.cw127.php');
+                    file_put_contents($str_font_metrics_file, json_encode($obj_font_metrics, JSON_PRETTY_PRINT));
+                    file_put_contents($str_character_widths_file, $arr_character_widths);
+                    if (file_exists($str_character_widths_127_file)) {
+                        unlink($str_character_widths_127_file);
+                    }
                 }
                 unset($obj_ttf);
-            } else {
-                $arr_character_widths = $this->readFontFile($str_unicode_filename . '.cw.dat');
             }
+
             $int_font_count = count($this->arr_fonts) + 1;
             if (!empty($this->str_alias_number_pages)) {
                 $arr_numbers = range(0, 57);
             } else {
                 $arr_numbers = range(0, 32);
             }
-            $this->arr_fonts[$str_font_key] = array(
+            $this->arr_fonts[$str_font_key] = [
                 'i' => $int_font_count,
-                'type' => $str_type,
-                'name' => $str_name,
-                'desc' => $arr_descriptors,
-                'up' => $flt_underline_pos,
-                'ut' => $flt_underline_thickness,
+                'type' => $obj_font_metrics->type,
+                'name' => $obj_font_metrics->name,
+                'desc' => $obj_font_metrics->descriptors,
+                'up' => $obj_font_metrics->underline_position,
+                'ut' => $obj_font_metrics->underline_thickness,
                 'cw' => $arr_character_widths,
-                'ttffile' => $str_ttf_filename,
+                'ttffile' => $str_ttf_file,
                 'fontkey' => $str_font_key,
                 'subset' => $arr_numbers,
-                'unifilename' => $str_unicode_filename
-            );
+                'unifilename' => $str_metrics_ident
+            ];
 
-            $this->arr_font_files[$str_font_key] = array('length1' => $int_original_size, 'type' => self::FONT_TRUETYPE, 'ttffile' => $str_ttf_filename);
+            $this->arr_font_files[$str_font_key] = array('length1' => $obj_font_metrics->original_size, 'type' => self::FONT_TRUETYPE, 'ttffile' => $str_ttf_file);
             $this->arr_font_files[$str_file] = array('type' => self::FONT_TRUETYPE);
             unset($arr_character_widths);
         } else {
@@ -2549,8 +2556,8 @@ class PDF
                     $this->Out('/BaseFont /' . $str_font_name . '');
                     $this->Out('/CIDSystemInfo ' . ($this->int_current_object + 2) . ' 0 R');
                     $this->Out('/FontDescriptor ' . ($this->int_current_object + 3) . ' 0 R');
-                    if (isset($arr_font_data['desc']['MissingWidth'])) {
-                        $this->Out('/DW ' . $arr_font_data['desc']['MissingWidth'] . '');
+                    if (isset($arr_font_data['desc']->MissingWidth)) {
+                        $this->Out('/DW ' . $arr_font_data['desc']->MissingWidth . '');
                     }
 
                     $this->PutTTFontWidths($arr_font_data, $obj_ttf->getMaxUni());
@@ -2659,7 +2666,7 @@ class PDF
         $bol_interval = false;
         $int_start_character_id = 1;
 
-        $str_font_file = $arr_font_data['unifilename'] . '.cw127.php';
+        $str_font_file = $arr_font_data['unifilename'] . $this->str_127_character_widths_file_suffix;
         if (file_exists($str_font_file)) {
             include($str_font_file);
             $int_start_character_id = 128;
@@ -2669,8 +2676,8 @@ class PDF
 
         // for each character
         for ($int_character_id = $int_start_character_id; $int_character_id < $int_character_width; $int_character_id++) {
-            if ($int_character_id == 128 && (!file_exists($arr_font_data['unifilename'] . '.cw127.php'))) {
-                if (is_writable(dirname($this->getFontPath() . $this->str_unifont_path /*'unifont/x'*/))) {
+            if ($int_character_id == 128 && (!file_exists($arr_font_data['unifilename'] . $this->str_127_character_widths_file_suffix))) {
+                if (is_writable(dirname($this->getFontPath() . $this->str_unifont_path))) {
 
                     $str_data = '<?php' . "\n";
                     $str_data .= '$rangeid=' . $int_range_id . ";\n";
@@ -2683,7 +2690,7 @@ class PDF
                     }
                     $str_data .= '$range=' . var_export($arr_range, true) . ";\n";
                     $str_data .= "?>";
-                    $this->writeFontFile($arr_font_data['unifilename'] . '.cw127.php', $str_data);
+                    $this->writeFontFile($arr_font_data['unifilename'] . $this->str_127_character_widths_file_suffix, $str_data);
                 }
             }
             if ($arr_font_data['cw'][$int_character_id * 2] == "\00" && $arr_font_data['cw'][$int_character_id * 2 + 1] == "\00") {
