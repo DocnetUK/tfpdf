@@ -2556,8 +2556,8 @@ class PDF
                     $this->Out('/BaseFont /' . $str_font_name . '');
                     $this->Out('/CIDSystemInfo ' . ($this->int_current_object + 2) . ' 0 R');
                     $this->Out('/FontDescriptor ' . ($this->int_current_object + 3) . ' 0 R');
-                    if (isset($arr_font_data['desc']->MissingWidth)) {
-                        $this->Out('/DW ' . $arr_font_data['desc']->MissingWidth . '');
+                    if (isset($arr_font_data['desc']['MissingWidth'])) {
+                        $this->Out('/DW ' . $arr_font_data['desc']['MissingWidth'] . '');
                     }
 
                     $this->PutTTFontWidths($arr_font_data, $obj_ttf->getMaxUni());
