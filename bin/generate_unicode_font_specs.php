@@ -19,7 +19,8 @@ foreach ($arr_fonts as $str_font_filename) {
     if (count($arr_matches) > 1) {
 
         //$str_font_family = str_replace("-", "", $arr_matches[1]);
-        $str_font_family = reset(explode("-", $arr_matches[1]));
+        $arr_bits = explode("-", $arr_matches[1]);
+        $str_font_family = reset($arr_bits);
         $str_style = "";
         if (strpos($arr_matches[1], "Bold") !== FALSE) {
             $str_style .= "B";

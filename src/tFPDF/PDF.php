@@ -445,7 +445,7 @@ class PDF
     /**
      * @var string
      */
-    protected $str_font_metrics_file_suffix = '-font-metrics.json';
+    protected $str_font_metrics_file_suffix = '-font-metrics.php';
 
     /**
      * @var string
@@ -1012,8 +1012,8 @@ class PDF
                 $str_file = str_replace(' ', '', $str_family) . strtolower($str_style) . '.php';
             }
         }
-        $str_font_key = $str_family . $str_style;
-        if (isset($this->arr_fonts[$str_font_key])) {
+        $fontkey = $str_family . $str_style;
+        if (isset($this->arr_fonts[$fontkey])) {
             return;
         }
         if ($bol_unicode) {
@@ -1024,8 +1024,8 @@ class PDF
             }
             $str_unicode_file = $this->str_unifont_path . strtolower(substr($str_file, 0, (strpos($str_file, '.'))));
             $str_unicode_filename = $this->getFontPath() . $str_unicode_file;
-            $str_name = '';
-            $int_original_size = 0;
+            $name = '';
+            $originalsize = 0;
             $arr_ttf_stat = stat($str_ttf_filename);
             if (file_exists($str_unicode_filename . $this->str_font_metrics_file_suffix)) {
                 include($str_unicode_filename . $this->str_font_metrics_file_suffix);
@@ -1033,11 +1033,13 @@ class PDF
             $arr_descriptors = [];
             $flt_underline_pos = 0.00;
             $flt_underline_thickness = 0.00;
-            if (!isset($str_type) || !isset($str_name) || $int_original_size != $arr_ttf_stat['size']) {
+
+            if (!isset($type) || !isset($name) || $originalsize != $arr_ttf_stat['size']) {
+
                 $obj_ttf = new TTFontFile();
                 $obj_ttf->getMetrics($str_ttf_filename);
                 $arr_character_widths = $obj_ttf->getCharWidths();
-                $str_name = preg_replace('/[ ()]/', '', $obj_ttf->getFullName());
+                $name = preg_replace('/[ ()]/', '', $obj_ttf->getFullName());
                 $arr_descriptors = array(
                     'Ascent' => round($obj_ttf->getAscent()),
                     'Descent' => round($obj_ttf->getDescent()),
@@ -1050,18 +1052,18 @@ class PDF
                 );
                 $flt_underline_pos = round($obj_ttf->getUnderlinePosition());
                 $flt_underline_thickness = round($obj_ttf->getUnderlineThickness());
-                $int_original_size = $arr_ttf_stat['size'] + 0;
-                $str_type = self::FONT_TRUETYPE;
+                $originalsize = $arr_ttf_stat['size'] + 0;
+                $type = self::FONT_TRUETYPE;
                 // Generate metrics .php file
                 $str_metrics_data = '<?php' . "\n";
-                $str_metrics_data .= '$name=\'' . $str_name . "';\n";
-                $str_metrics_data .= '$type=\'' . $str_type . "';\n";
+                $str_metrics_data .= '$name=\'' . $name . "';\n";
+                $str_metrics_data .= '$type=\'' . $type . "';\n";
                 $str_metrics_data .= '$desc=' . var_export($arr_descriptors, true) . ";\n";
                 $str_metrics_data .= '$up=' . $flt_underline_pos . ";\n";
                 $str_metrics_data .= '$ut=' . $flt_underline_thickness . ";\n";
                 $str_metrics_data .= '$ttffile=\'' . str_replace(__DIR__ . "/", "", $str_ttf_filename) . "';\n";
-                $str_metrics_data .= '$originalsize=' . $int_original_size . ";\n";
-                $str_metrics_data .= '$fontkey=\'' . $str_font_key . "';\n";
+                $str_metrics_data .= '$originalsize=' . $originalsize . ";\n";
+                $str_metrics_data .= '$fontkey=\'' . $fontkey . "';\n";
                 $str_metrics_data .= "?>";
                 if (is_writable(dirname($this->getFontPath() . $this->str_unifont_path))) {
                     $this->writeFontFile($str_unicode_filename .  $this->str_font_metrics_file_suffix, $str_metrics_data);
@@ -1078,20 +1080,20 @@ class PDF
             } else {
                 $arr_numbers = range(0, 32);
             }
-            $this->arr_fonts[$str_font_key] = array(
+            $this->arr_fonts[$fontkey] = array(
                 'i' => $int_font_count,
-                'type' => $str_type,
-                'name' => $str_name,
+                'type' => $type,
+                'name' => $name,
                 'desc' => $arr_descriptors,
                 'up' => $flt_underline_pos,
                 'ut' => $flt_underline_thickness,
                 'cw' => $arr_character_widths,
                 'ttffile' => $str_ttf_filename,
-                'fontkey' => $str_font_key,
+                'fontkey' => $fontkey,
                 'subset' => $arr_numbers,
                 'unifilename' => $str_unicode_filename
             );
-            $this->arr_font_files[$str_font_key] = array('length1' => $int_original_size, 'type' => self::FONT_TRUETYPE, 'ttffile' => $str_ttf_filename);
+            $this->arr_font_files[$fontkey] = array('length1' => $originalsize, 'type' => self::FONT_TRUETYPE, 'ttffile' => $str_ttf_filename);
             $this->arr_font_files[$str_file] = array('type' => self::FONT_TRUETYPE);
             unset($arr_character_widths);
         } else {
@@ -1117,7 +1119,7 @@ class PDF
                     );
                 }
             }
-            $this->arr_fonts[$str_font_key] = $arr_info;
+            $this->arr_fonts[$fontkey] = $arr_info;
         }
     }
 
