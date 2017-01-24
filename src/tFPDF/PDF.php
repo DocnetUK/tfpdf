@@ -1029,10 +1029,10 @@ class PDF
             $arr_ttf_stat = stat($str_ttf_filename);
             $flt_underline_pos = 0.00;
             $flt_underline_thickness = 0.00;
+            $arr_descriptors = [];
             if (file_exists($str_unicode_filename . $this->str_font_metrics_file_suffix)) {
                 include($str_unicode_filename . $this->str_font_metrics_file_suffix);
             }
-            $arr_descriptors = [];
 
             if (!isset($type) || !isset($name) || $originalsize != $arr_ttf_stat['size']) {
 
@@ -1058,7 +1058,7 @@ class PDF
                 $str_metrics_data = '<?php' . "\n";
                 $str_metrics_data .= '$name=\'' . $name . "';\n";
                 $str_metrics_data .= '$type=\'' . $type . "';\n";
-                $str_metrics_data .= '$desc=' . var_export($arr_descriptors, true) . ";\n";
+                $str_metrics_data .= '$arr_descriptors=' . var_export($arr_descriptors, true) . ";\n";
                 $str_metrics_data .= '$flt_underline_pos=' . $flt_underline_pos . ";\n";
                 $str_metrics_data .= '$flt_underline_thickness=' . $flt_underline_thickness . ";\n";
                 $str_metrics_data .= '$ttffile=\'' . str_replace(__DIR__ . "/", "", $str_ttf_filename) . "';\n";
