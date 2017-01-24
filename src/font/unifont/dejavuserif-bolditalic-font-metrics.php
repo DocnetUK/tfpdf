@@ -1,7 +1,7 @@
 <?php
 $name='DejaVuSerif-BoldItalic';
 $type='TTF';
-$desc=array (
+$arr_descriptors=array (
   'Ascent' => 939.0,
   'Descent' => -236.0,
   'CapHeight' => 939.0,

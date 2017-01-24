@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixes
 - Fixed unit test failing when using the default unifont files
+- Font descriptor data was not utilised properly
 
 ### Added
 - New parameter added to MultiCell - which allows you to limit the number of lines the MultiCell should use at most. If the parameter is passed the Multicell will return a string with the remaining text, which did not fit.

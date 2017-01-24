@@ -1,7 +1,7 @@
 <?php
 $name='DejaVuSans-ExtraLight';
 $type='TTF';
-$desc=array (
+$arr_descriptors=array (
   'Ascent' => 928.0,
   'Descent' => -236.0,
   'CapHeight' => 928.0,
