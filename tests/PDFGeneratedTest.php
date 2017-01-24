@@ -22,6 +22,15 @@ class PDFGeneratedTest extends TestCase
         $pdfLibrary->Ln(10);
         $pdfLibrary->Write(5, "La taille de ce PDF n'est que de 12 ko.");
 
+        $pdfLibrary->SetFont('Courier', '', 14);
+        $pdfLibrary->Ln(10);
+        $pdfLibrary->Write(5, "Hello Courier World");
+        $pdfLibrary->SetFont('Courier', 'U', 14);
+        $pdfLibrary->Ln(10);
+        $pdfLibrary->Write(5, "Hello Underscored Courier World");
+
+        $pdfLibrary->Ln(10);
+
         $file = $pdfLibrary->output();
 
         if (empty($file)) {
