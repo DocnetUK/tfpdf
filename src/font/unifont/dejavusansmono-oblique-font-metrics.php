@@ -16,4 +16,3 @@ $flt_underline_thickness=44;
 $ttffile='../font/unifont/DejaVuSansMono-Oblique.ttf';
 $originalsize=241972;
 $fontkey='dejavusansmonoI';
-?>

@@ -16,4 +16,3 @@ $flt_underline_thickness=49;
 $ttffile='../font/unifont/BabelStoneHan.ttf';
 $originalsize=25281048;
 $fontkey='babelstonehan';
-?>

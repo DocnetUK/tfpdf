@@ -1064,7 +1064,6 @@ class PDF
                 $str_metrics_data .= '$ttffile=\'' . str_replace(__DIR__ . "/", "", $str_ttf_filename) . "';\n";
                 $str_metrics_data .= '$originalsize=' . $originalsize . ";\n";
                 $str_metrics_data .= '$fontkey=\'' . $fontkey . "';\n";
-                $str_metrics_data .= "?>";
                 if (is_writable(dirname($this->getFontPath() . $this->str_unifont_path))) {
                     $this->writeFontFile($str_unicode_filename .  $this->str_font_metrics_file_suffix, $str_metrics_data);
                     $this->writeFontFile($str_unicode_filename . $this->str_character_widths_file_suffix, $arr_character_widths);

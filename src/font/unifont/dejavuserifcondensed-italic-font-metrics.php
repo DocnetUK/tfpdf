@@ -16,4 +16,3 @@ $flt_underline_thickness=44;
 $ttffile='../font/unifont/DejaVuSerifCondensed-Italic.ttf';
 $originalsize=338140;
 $fontkey='dejavuserifcondensedI';
-?>
