@@ -24,10 +24,17 @@ class PDFGeneratedTest extends TestCase
 
         $file = $pdfLibrary->output();
 
-        file_put_contents(__DIR__ . '/test_data/output.pdf', $file);
+        if (empty($file)) {
+            static::fail("Empty PDF library output");
+        }
 
-        if (!file_exists(__DIR__ . '/test_data/output.pdf')) {
-            static::fail();
+        $file_name = __DIR__ . '/test_data/output.pdf';
+
+        unlink($file_name);
+        file_put_contents($file_name, $file);
+
+        if (!file_exists($file_name)) {
+            static::fail("PDF {$file_name} file does not exist");
         }
     }
 }
