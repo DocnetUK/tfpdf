@@ -1287,8 +1287,8 @@ class PDF
     }
 
     /**
-     * @param $flt_width
-     * @param int $flt_height
+     * @param float $flt_width
+     * @param float $flt_height
      * @param string $str_text
      * @param int $int_border
      * @param int $int_line_number
@@ -1589,8 +1589,8 @@ class PDF
     }
 
     /**
-     * @param $flt_height
-     * @param $str_text
+     * @param float $flt_height
+     * @param string $str_text
      * @param string $str_link
      */
     public function Write($flt_height, $str_text, $str_link = '')
@@ -1719,8 +1719,8 @@ class PDF
 
     /**
      * @param $str_file
-     * @param null $flt_x
-     * @param null $flt_y
+     * @param float|null $flt_x
+     * @param float|null $flt_y
      * @param int $int_width
      * @param int $int_height
      * @param string $str_type
