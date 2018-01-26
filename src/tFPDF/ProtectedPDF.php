@@ -15,7 +15,7 @@ class ProtectedPDF extends PDF
     const PERMISSION_COPY = 16;
     const PERMISSION_ANNOTATE_FORMS = 32;
     const PROTECTION_BASE = 192;
-    const PASSWORD_LENGTH = 32;
+    const PASSWORD_MAX_LENGTH = 32;
 
     /**
      * Whether encryption is enabled
@@ -114,11 +114,11 @@ class ProtectedPDF extends PDF
     }
 
     /**
-     * @param array|null $permissions An array of ::PERMISSION_*
-     * @param string $userPassword The password for restricted access to the document (obeying $permissions)
-     * @param string|null $ownerPassword The password for unrestricted access to the document (ignoring $permissions)
+     * @param array|null $permissions     An array of ::PERMISSION_*
+     * @param string $user_password       The password for restricted access to the document (obeying $permissions)
+     * @param string|null $owner_password The password for unrestricted access to the document (ignoring $permissions)
      */
-    public function SetProtection(array $permissions = null, $userPassword = '', $ownerPassword = null)
+    public function SetProtection(array $permissions = null, $user_password = '', $owner_password = null)
     {
         $protection = self::PROTECTION_BASE;
         foreach((array)$permissions as $permission){
@@ -128,16 +128,16 @@ class ProtectedPDF extends PDF
             }
         }
 
-        if (strlen($userPassword) > self::PASSWORD_LENGTH || strlen((string)$ownerPassword) > self::PASSWORD_LENGTH) {
-            throw new \InvalidArgumentException('Passwords must be no greater than '.self::PASSWORD_LENGTH.' chars');
+        if (strlen($user_password) > self::PASSWORD_MAX_LENGTH || strlen((string)$owner_password) > self::PASSWORD_MAX_LENGTH) {
+            throw new \InvalidArgumentException('Passwords must be no greater than '.self::PASSWORD_MAX_LENGTH.' chars');
         }
 
-        if ($ownerPassword === null) {
+        if ($owner_password === null) {
             // Generate random ownerpassword
-            $ownerPassword = substr(uniqid(mt_rand(), true).uniqid(mt_rand(), true), 0, self::PASSWORD_LENGTH);
+            $owner_password = substr(uniqid(mt_rand(), true).uniqid(mt_rand(), true), 0, self::PASSWORD_MAX_LENGTH);
         }
 
-        $this->InitializeEncryption($userPassword, $ownerPassword, $protection);
+        $this->InitializeEncryption($user_password, $owner_password, $protection);
 
         $this->bol_encrypted = true;
     }
@@ -145,15 +145,15 @@ class ProtectedPDF extends PDF
     /**
      * Compute encryption key
      */
-    private function InitializeEncryption($userPassword, $ownerPassword, $protection)
+    private function InitializeEncryption($user_password, $owner_password, $protection)
     {
         // Pad passwords
-        $userPassword  = self::FormatEncryptionPassword($userPassword);
-        $ownerPassword = self::FormatEncryptionPassword($ownerPassword);
+        $user_password  = self::FormatEncryptionPassword($user_password);
+        $owner_password = self::FormatEncryptionPassword($owner_password);
 
         // Compute values
-        $this->str_o_value        = $this->GenerateOvalue($userPassword, $ownerPassword);
-        $this->str_encryption_key = $this->GenerateEncryptionKey($userPassword, $this->str_o_value, $protection);
+        $this->str_o_value        = $this->GenerateOvalue($user_password, $owner_password);
+        $this->str_encryption_key = $this->GenerateEncryptionKey($user_password, $this->str_o_value, $protection);
         $this->str_u_value        = $this->GenerateUvalue($this->str_encryption_key);
         $this->int_p_value        = $this->GeneratePvalue($protection);
     }
@@ -176,15 +176,16 @@ class ProtectedPDF extends PDF
     }
 
     /**
-     * @param string $userPassword
-     * @param string $ownerPassword
+     * @param string $user_password
+     * @param string $owner_password
+     *
      * @return string
      */
-    private static function GenerateOvalue($userPassword, $ownerPassword)
+    private static function GenerateOvalue($user_password, $owner_password)
     {
-        $tmp         = self::MD5to16($ownerPassword);
-        $ownerRC4Key = substr($tmp, 0, 5);
-        return self::RC4($ownerRC4Key, $userPassword);
+        $tmp           = self::MD5to16($owner_password);
+        $owner_rc4_key = substr($tmp, 0, 5);
+        return self::RC4($owner_rc4_key, $user_password);
     }
 
     /**
@@ -206,14 +207,15 @@ class ProtectedPDF extends PDF
     }
 
     /**
-     * @param string $userPassword The padded user password
+     * @param string $user_password The padded user password
      * @param string $str_o_value
-     * @param int $protection The protection flags integer value
+     * @param int $protection       The protection flags integer value
+     *
      * @return string
      */
-    private static function GenerateEncryptionKey($userPassword, $str_o_value, $protection)
+    private static function GenerateEncryptionKey($user_password, $str_o_value, $protection)
     {
-        $tmp = self::MD5to16($userPassword.$str_o_value.chr($protection)."\xFF\xFF\xFF");
+        $tmp = self::MD5to16($user_password.$str_o_value.chr($protection)."\xFF\xFF\xFF");
         return substr($tmp, 0, 5);
     }
 
@@ -223,7 +225,7 @@ class ProtectedPDF extends PDF
      */
     private static function FormatEncryptionPassword($password)
     {
-        return substr($password.self::ENCRYPTION_PADDING, 0, self::PASSWORD_LENGTH);
+        return substr($password.self::ENCRYPTION_PADDING, 0, self::PASSWORD_MAX_LENGTH);
     }
 
     /**
@@ -233,12 +235,12 @@ class ProtectedPDF extends PDF
      */
     private static function RC4($key, $data)
     {
-        static $lastKey;
-        static $lastState;
+        static $last_key;
+        static $last_state;
 
-        if ($key === $lastKey) {
+        if ($key === $last_key) {
             // Same key - use same state
-            $state = $lastState;
+            $state = $last_state;
         } else {
             // Calculate new state
             $k     = str_repeat($key, 256 / strlen($key) + 1);
@@ -250,8 +252,8 @@ class ProtectedPDF extends PDF
                 $state[$i] = $state[$j];
                 $state[$j] = $t;
             }
-            $lastKey   = $key;
-            $lastState = $state;
+            $last_key   = $key;
+            $last_state = $state;
         }
 
         $len = strlen($data);
