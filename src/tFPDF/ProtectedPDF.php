@@ -122,7 +122,10 @@ class ProtectedPDF extends PDF
     {
         $protection = self::PROTECTION_BASE;
         foreach((array)$permissions as $permission){
-            $protection += $permission;
+            // Test for duplicate permissions
+            if (($protection & $permission) === 0) {
+                $protection += $permission;
+            }
         }
 
         if (strlen($userPassword) > self::PASSWORD_LENGTH || strlen((string)$ownerPassword) > self::PASSWORD_LENGTH) {
