@@ -287,7 +287,7 @@ class PDFBarcode extends PDF
     /**
      * @param $flt_pos_x
      * @param $flt_pos_y
-     * @param $str_code
+     * @param string $str_code
      * @param $flt_width
      * @param $flt_height
      */
@@ -382,7 +382,7 @@ class PDFBarcode extends PDF
     /**
      * @param $flt_pos_x
      * @param $flt_pos_y
-     * @param $str_code
+     * @param string $str_code
      * @param float $flt_baseline
      * @param int $flt_height
      * @throws \Exception
