@@ -944,7 +944,7 @@ class PDF
     }
 
     /**
-     * @param $flt_width
+     * @param float $flt_width
      */
     public function SetLineWidth($flt_width)
     {
@@ -956,10 +956,10 @@ class PDF
     }
 
     /**
-     * @param $flt_x_1
-     * @param $flt_y_1
-     * @param $flt_x_2
-     * @param $flt_y_2
+     * @param float $flt_x_1
+     * @param float $flt_y_1
+     * @param float $flt_x_2
+     * @param float $flt_y_2
      */
     public function Line($flt_x_1, $flt_y_1, $flt_x_2, $flt_y_2)
     {
@@ -970,10 +970,10 @@ class PDF
     }
 
     /**
-     * @param $flt_x
-     * @param $flt_y
-     * @param $flt_width
-     * @param $flt_height
+     * @param float $flt_x
+     * @param float $flt_y
+     * @param float $flt_width
+     * @param float $flt_height
      * @param string $str_style
      */
     public function Rect($flt_x, $flt_y, $flt_width, $flt_height, $str_style = '')
@@ -1232,10 +1232,10 @@ class PDF
     }
 
     /**
-     * @param $flt_x
-     * @param $flt_y
-     * @param $flt_width
-     * @param $flt_height
+     * @param float $flt_x
+     * @param float $flt_y
+     * @param float $flt_width
+     * @param float $flt_height
      * @param $mix_link_key
      */
     public function Link($flt_x, $flt_y, $flt_width, $flt_height, $mix_link_key)
@@ -1251,8 +1251,8 @@ class PDF
     }
 
     /**
-     * @param $flt_x
-     * @param $flt_y
+     * @param float $flt_x
+     * @param float $flt_y
      * @param string $str_text
      */
     public function Text($flt_x, $flt_y, $str_text)
@@ -1424,8 +1424,8 @@ class PDF
     }
 
     /**
-     * @param $flt_width
-     * @param $flt_height
+     * @param float $flt_width
+     * @param float $flt_height
      * @param string $str_text
      * @param int $int_border
      * @param string $str_alignment
@@ -1805,7 +1805,7 @@ class PDF
     }
 
     /**
-     * @param $flt_position_x
+     * @param float $flt_position_x
      */
     public function SetX($flt_position_x)
     {
@@ -1827,7 +1827,7 @@ class PDF
     }
 
     /**
-     * @param $flt_position_y
+     * @param float $flt_position_y
      */
     public function SetY($flt_position_y)
     {
