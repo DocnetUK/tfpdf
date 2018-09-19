@@ -2799,7 +2799,7 @@ class PDF
     }
 
     /**
-     * @param string $arr_info
+     * @param array $arr_info
      */
     public function PutImage(&$arr_info)
     {
