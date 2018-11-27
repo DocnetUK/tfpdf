@@ -864,16 +864,16 @@ class PDF
         }
         switch (count($args)) {
             case 1:
-                $this->str_fill_color = sprintf('%.3f G', $args[0] / 100);
+                $this->str_draw_color = sprintf('%.3f G', $args[0] / 100);
                 break;
             case 3:
-                $this->str_fill_color = sprintf('%.3f %.3f %.3f RG', $args[0] / 255, $args[1] / 255, $args[2] / 255);
+                $this->str_draw_color = sprintf('%.3f %.3f %.3f RG', $args[0] / 255, $args[1] / 255, $args[2] / 255);
                 break;
             case 4:
-                $this->str_fill_color = sprintf('%.3f %.3f %.3f %.3f K', $args[0] / 100, $args[1] / 100, $args[2] / 100, $args[3] / 100);
+                $this->str_draw_color = sprintf('%.3f %.3f %.3f %.3f K', $args[0] / 100, $args[1] / 100, $args[2] / 100, $args[3] / 100);
                 break;
             default:
-                $this->str_fill_color = '0 G';
+                $this->str_draw_color = '0 G';
         }
         if ($this->int_page > 0) {
             $this->Out($this->str_draw_color);
