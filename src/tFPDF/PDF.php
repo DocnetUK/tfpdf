@@ -1941,7 +1941,7 @@ class PDF
      * @param string $str_orientation
      * @param $mix_size
      */
-    private function BeginPage($str_orientation, $mix_size)
+    protected function BeginPage($str_orientation, $mix_size)
     {
         $this->int_page++;
         $this->arr_pages[$this->int_page] = '';
