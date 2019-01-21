@@ -2362,7 +2362,7 @@ class PDF
     /**
      * Puts the pages into the document
      */
-    private function PutPages()
+    protected function PutPages()
     {
         $int_page = $this->int_page;
         if (!empty($this->str_alias_number_pages)) {
